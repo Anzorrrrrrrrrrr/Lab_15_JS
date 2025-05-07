@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Практична робота 15</title>
+  <style>
+    a {
+      color: blue;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    h2.head {
+      padding: 10px;
+    }
+
+    h2.head .inner {
+      font-weight: bold;
+    }
+
+    div {
+      background-color: lightgray;
+      padding: 10px;
+      margin: 10px 0;
+    }
+
+    input[type="checkbox"] {
+      margin: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>1. Додавання атрибуту target="_blank" до посилань:</h2>
+  <a href="https://example.com">Example</a>
+  <a href="http://example.com">Not Secure</a>
+
+  <h2>2. Зміна фону та розміру шрифту для елементів h2 з класом head та inner:</h2>
+  <h2 class="head">header1</h2>
+  <h2 class="head">header2 <span class="inner">inner elem1</span></h2>
+  <h2>header3</h2>
+  <h2 class="head">header4<span class="inner">inner elem2</span></h2>
+  <h2>header5</h2>
+
+  <h2>3. Переміщення тегів div безпосередньо над h3:</h2>
+  <h3>header1</h3>
+  <div>text1</div>
+  <h3>header2</h3>
+  <div>text2</div>
+
+  <h2>4. Чекбокси:</h2>
+  <input type="checkbox"> Checkbox 1
+  <input type="checkbox"> Checkbox 2
+  <input type="checkbox"> Checkbox 3
+  <input type="checkbox"> Checkbox 4
+  <input type="checkbox"> Checkbox 5
+  <input type="checkbox"> Checkbox 6
+
+  <h2>5. Деструктуризація масиву:</h2>
+  <p id="output1"></p>
+
+  <h2>6. Деструктуризація об'єкта:</h2>
+  <p id="output2"></p>
+
+  <h2>7. Функція mul() для добутку чисел:</h2>
+  <p id="output3"></p>
+
+  <h2>8. Заміна bind() на стрілкові функції:</h2>
+  <p id="output4"></p>
+
+  <h2>9. Функція mapBuilder:</h2>
+  <p id="output5"></p>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    // 1. Додавання target="_blank" до посилань
+    $("a[href^='https://']").attr("target", "_blank");
+
+    // 2. Зміна фону та розміру шрифту
+    $("h2.head").css("background-color", "green");
+    $("h2.head .inner").css("font-size", "35px");
+
+    // 3. Переміщення div безпосередньо над h3
+    $("h3").each(function() {
+      var nextDiv = $(this).next("div");
+      if (nextDiv.length) {
+        $(this).before(nextDiv);
+      }
+    });
+
+    // 4. Чекбокси
+    let checkedCount = 0;
+    $("input[type='checkbox']").change(function() {
+      if ($(this).prop("checked")) {
+        checkedCount++;
+      } else {
+        checkedCount--;
+      }
+      if (checkedCount >= 3) {
+        $("input[type='checkbox']").prop("disabled", true);
+      }
+    });
+
+    // 5. Деструктуризація масиву
+    let arr = ["Tom", "Sam", "Ray", "Bob"];
+    let [x, y, ...z] = arr;
+    document.getElementById("output1").textContent = `x: ${x}, y: ${y}, z: ${JSON.stringify(z)}`;
+
+    // 6. Деструктуризація об'єкта
+    let data = {
+      names: ["Sam", "Tom", "Ray", "Bob"],
+      ages: [20, 24, 22, 26]
+    };
+    let { names: [name1, name2, name3, name4], ages: [, age2, , age4] } = data;
+    document.getElementById("output2").textContent = `name2: ${name2}, age2: ${age2}, name4: ${name4}, age4: ${age4}`;
+
+    // 7. Функція mul()
+    function mul(...args) {
+      return args.filter(item => typeof item === "number").reduce((acc, curr) => acc * curr, 1) || 0;
+    }
+    document.getElementById("output3").textContent = `mul(1, "str", 2, 3, true): ${mul(1, "str", 2, 3, true)}, mul(null, "str", false, true): ${mul(null, "str", false, true)}`;
+
+    // 8. Заміна bind() на стрілкові функції
+    let server = {
+      data: 0,
+      convertToString: function (callback) {
+        callback(() => this.data + "");
+      }
+    };
+
+    let client = {
+      server: server,
+      result: "",
+      calc: function (data) {
+        this.server.data = data;
+        this.server.convertToString(this.notification());
+      },
+      notification: function () {
+        return callback => {
+          this.result = callback();
+        };
+      }
+    };
+
+    client.calc(123);
+    document.getElementById("output4").textContent = `client.result: ${client.result}, typeof client.result: ${typeof client.result}`;
+
+    // 9. Функція mapBuilder
+    function mapBuilder(keysArray, valuesArray) {
+      let map = new Map();
+      keysArray.forEach((key, index) => {
+        map.set(key, valuesArray[index]);
+      });
+      return map;
+    }
+
+    let keys = [1, 2, 3, 4];
+    let values = ["div", "span", "b", "i"];
+    let map = mapBuilder(keys, values);
+    document.getElementById("output5").textContent = `map.size: ${map.size}, map.get(2): ${map.get(2)}`;
+  </script>
+</body>
+</html>
